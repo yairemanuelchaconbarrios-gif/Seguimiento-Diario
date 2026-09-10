@@ -29,14 +29,11 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
         body { background: linear-gradient(135deg, var(--celeste) 0%, var(--verde-claro) 100%); min-height: 100vh; color: var(--gris-oscuro); }
         .oculto { display: none !important; }
-
         .titulo-pagina { text-align: center; padding: 20px; background: linear-gradient(90deg, var(--azul-profundo), var(--morado)); color: white; font-size: 2em; font-weight: bold; letter-spacing: 1px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-
         .pantalla-inicio { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - 80px); padding: 40px; }
         .logo-titulo { text-align: center; margin-bottom: 30px; }
         .logo-titulo h2 { font-size: 2em; color: var(--azul-profundo); margin-bottom: 10px; }
         .logo-titulo p { font-size: 1.1em; color: var(--gris-medio); }
-
         .persona-reportes {
             width: 180px;
             height: 180px;
@@ -71,7 +68,6 @@
             50% { transform: scale(1.25); }
             100% { transform: scale(1); }
         }
-
         .contenedor-botones { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; max-width: 750px; width: 100%; }
         .boton-acceso { background: white; border: none; border-radius: 20px; padding: 50px 30px; text-align: center; cursor: pointer; box-shadow: var(--sombra-destacada); transition: all 0.35s ease; }
         .boton-acceso:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 8px 25px rgba(0, 102, 204, 0.15); }
@@ -80,13 +76,11 @@
         .boton-acceso p { font-size: 0.95em; color: var(--gris-medio); }
         .boton-acceso.administrador { border-top: 6px solid var(--azul-brillante); background: linear-gradient(white, #F0F7FF); }
         .boton-acceso.espectador { border-top: 6px solid var(--verde-brillante); background: linear-gradient(white, #F0FFF8); }
-
         .cabecera { background: linear-gradient(135deg, var(--azul-profundo), var(--azul-brillante)); color: white; padding: 16px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
         .cabecera h1 { font-size: 1.3em; display: flex; align-items: center; gap: 10px; }
         .boton-salir { background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 18px; border-radius: 10px; cursor: pointer; font-weight: 500; transition: all 0.25s; }
         .boton-salir:hover { background: rgba(255,255,255,0.35); transform: scale(1.05); }
         .contenedor { max-width: 1450px; margin: 0 auto; padding: 25px; }
-
         .panel-admin { background: white; border-radius: 18px; padding: 28px; margin-bottom: 25px; box-shadow: var(--sombra-destacada); border-left: 5px solid var(--azul-brillante); }
         .panel-admin h2 { font-size: 1.15em; color: var(--azul-profundo); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         .area-carga { border: 3px dashed var(--azul-claro); border-radius: 16px; padding: 32px; text-align: center; margin-bottom: 20px; transition: all 0.3s; background: linear-gradient(#FBFDFF, #F0F7FF); }
@@ -114,10 +108,8 @@
         .item-imagen .info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 200px; }
         .item-imagen .acciones { display: flex; gap: 6px; align-items: center; }
         .orden-numero { font-weight: bold; color: var(--azul-profundo); min-width: 28px; display: inline-block; text-align: center; font-size: 1.1em; background: var(--celeste); border-radius: 50%; padding: 3px 0; height: 28px; }
-
         .visor-seccion { background: white; border-radius: 18px; padding: 28px; box-shadow: var(--sombra-destacada); border-left: 5px solid var(--verde-brillante); }
         .visor-seccion h2 { font-size: 1.15em; color: var(--verde-oscuro); margin-bottom: 10px; }
-
         .fecha-visor {
             text-align: center;
             font-size: 28px;
@@ -130,7 +122,6 @@
             border: 3px solid var(--azul-brillante);
             letter-spacing: 1px;
         }
-
         .visor-principal { display: flex; flex-direction: column; align-items: center; width: 100%; }
         .visor-con-flechas { display: flex; align-items: center; justify-content: center; width: 100%; gap: 12px; margin-bottom: 18px; }
         .btn-flecha-lado {
@@ -141,7 +132,6 @@
         }
         .btn-flecha-lado:hover { background: linear-gradient(135deg, var(--azul-profundo), #002244); transform: scale(1.08); }
         .btn-flecha-lado:disabled { background: linear-gradient(#B8C8DC, #94A3B8); cursor: not-allowed; opacity: 0.6; transform: none; box-shadow: none; }
-
         .area-vista {
             flex: 1; min-height: 450px; height: 450px;
             display: flex; align-items: center; justify-content: center;
@@ -160,7 +150,6 @@
             transition: transform 0.1s ease;
         }
         .aviso-sin { text-align: center; padding: 60px; color: var(--gris-medio); font-size: 1.1em; }
-
         .barra-controles { display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap; padding: 16px; background: linear-gradient(135deg, #F0F4F8, #E6F0FA); border-radius: 14px; width: 100%; border: 1px solid var(--gris-claro); }
         .indicador { font-size: 17px; font-weight: 700; color: var(--azul-profundo); min-width: 110px; text-align: center; }
         .grupo-zoom { display: flex; gap: 6px; margin-left: 10px; }
@@ -168,14 +157,13 @@
         .btn-zoom:hover { background: var(--celeste); border-color: var(--azul-profundo); transform: scale(1.1); }
         .btn-pantalla { background: linear-gradient(135deg, var(--verde-brillante), var(--verde-oscuro)); color: white; border: none; padding: 9px 16px; border-radius: 8px; cursor: pointer; font-size: 0.9em; margin-left: 10px; transition: all 0.25s; }
         .btn-pantalla:hover { background: linear-gradient(135deg, var(--verde-oscuro), #007733); transform: scale(1.05); }
-
         .pdf-oculto { position: absolute; left: -9999px; top: 0; background: white; padding: 30px; width: 800px; }
         .pdf-oculto h1 { text-align: center; color: #003366; border-bottom: 3px solid #0066CC; padding-bottom: 15px; margin-bottom: 25px; }
         .pdf-oculto .fecha { text-align: right; font-size: 14px; color: #475569; margin-bottom: 20px; }
         .pdf-oculto .img-pdf { margin-bottom: 25px; text-align: center; }
         .pdf-oculto .img-pdf img { max-width: 100%; border: 1px solid #CBD5E1; border-radius: 6px; }
         .pdf-oculto .img-pdf .nombre { font-weight: 600; color: #1E293B; margin-top: 8px; font-size: 13px; }
-
+        .aviso-compartido { background: linear-gradient(#FFFBEB, #FFF3C7); border-left: 5px solid var(--amarillo-dorado); padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9em; color: #926300; }
         @media (max-width: 600px) {
             .visor-con-flechas { flex-direction: column; }
             .btn-flecha-lado { width: 130px; height: 52px; }
@@ -186,19 +174,15 @@
     </style>
 </head>
 <body>
-
     <div class="titulo-pagina">📋 Seguimiento Diario</div>
-
     <div class="pantalla-inicio" id="pantallaInicio">
         <div class="logo-titulo">
             <h2>Bienvenido al Sistema de Seguimiento Diario</h2>
             <p>Buenas noches</p>
         </div>
-
         <div class="persona-reportes">
             <span class="reporte-icon">📝</span>
         </div>
-
         <div class="contenedor-botones">
             <button class="boton-acceso administrador" onclick="ingresarComo('admin')">
                 <div class="icono">🔐</div>
@@ -212,7 +196,6 @@
             </button>
         </div>
     </div>
-
     <div class="oculto" id="pantallaAdmin">
         <div class="cabecera">
             <h1>🔐 Panel de Administración — Seguimiento Diario</h1>
@@ -221,6 +204,9 @@
         <div class="contenedor">
             <div class="panel-admin">
                 <h2>📤 Cargar y Guardar Imágenes</h2>
+                <div class="aviso-compartido">
+                    ℹ️ Las imágenes cargadas se mantendrán visibles para todos los usuarios hasta que se carguen imágenes nuevas.
+                </div>
                 <div class="area-carga">
                     <p>Selecciona una o varias imágenes (JPG, PNG, GIF, etc.)</p>
                     <input type="file" id="cargarImagenes" multiple accept="image/*" style="margin:15px 0; font-size:15px;">
@@ -229,15 +215,13 @@
                         <button class="btn btn-verde" onclick="generarPDF()">💾 Guardar y Generar PDF</button>
                     </div>
                 </div>
-                <div class="aviso verde" id="estadoCarga">Selecciona tus imágenes, pulsa "Cargar" y luego "Guardar y Generar PDF"</div>
-
+                <div class="aviso verde" id="estadoCarga">Selecciona tus imágenes, pulsa "Cargar" y luego "Guardar y Generar PDF". Las imágenes se mantendrán hasta que cargues nuevas.</div>
                 <div class="encabezado-lista">
                     <h2>📋 Imágenes Cargadas</h2>
                     <button class="btn-rojo-grande" onclick="eliminarTodo()">🗑️ Eliminar Todos los Registros</button>
                 </div>
                 <div class="lista-imagenes" id="listaImagenes"></div>
             </div>
-
             <div class="visor-seccion">
                 <h2>🖼️ Visor de Imágenes</h2>
                 <div class="fecha-visor" id="fechaVisorAdmin">📅 Fecha: --/--/----</div>
@@ -262,7 +246,6 @@
             </div>
         </div>
     </div>
-
     <div class="oculto" id="pantallaEspectador">
         <div class="cabecera" style="background: linear-gradient(135deg, var(--verde-brillante), var(--verde-oscuro));">
             <h1>👁️ Visor — Seguimiento Diario</h1>
@@ -293,9 +276,7 @@
             </div>
         </div>
     </div>
-
     <div class="pdf-oculto" id="contenidoPDF"></div>
-
     <script>
         const { jsPDF } = window.jspdf;
         const CLAVE = 'plataforma_imagenes_guardadas';
@@ -303,14 +284,14 @@
         let imagenes = [];
         let indiceActual = 0;
         let escala = 1;
-
         let posX = 0, posY = 0;
         let desplazamientoX = 0, desplazamientoY = 0;
         let arrastrando = false;
         let areaActiva = null;
 
+        // CARGAR IMÁGENES GUARDADAS AL INICIAR SIEMPRE
         window.onload = function() {
-            cargarGuardadas();
+            cargarGuardadas(); // ✅ Se cargan automáticamente al abrir la página
             document.addEventListener('keydown', function(e) {
                 if (!document.getElementById('pantallaAdmin').classList.contains('oculto') && imagenes.length) {
                     if (e.key === 'ArrowLeft') { e.preventDefault(); anterior(); }
@@ -323,16 +304,27 @@
             });
         };
 
+        // ✅ CARGAR DESDE EL ALMACENAMIENTO COMPARTIDO
         function cargarGuardadas() {
             const datos = localStorage.getItem(CLAVE);
-            if (datos) imagenes = JSON.parse(datos);
+            if (datos) {
+                imagenes = JSON.parse(datos);
+                console.log(`✅ Se cargaron ${imagenes.length} imágenes guardadas`);
+            } else {
+                imagenes = [];
+                console.log('ℹ️ No hay imágenes guardadas aún');
+            }
         }
+
+        // ✅ GUARDAR EN ALMACENAMIENTO COMPARTIDO
         function guardar() {
             localStorage.setItem(CLAVE, JSON.stringify(imagenes));
         }
+
         function ordenar() {
             imagenes.sort((a, b) => a.orden - b.orden);
         }
+
         function obtenerFechaHoy() {
             const hoy = new Date();
             const dd = String(hoy.getDate()).padStart(2, '0');
@@ -353,6 +345,7 @@
             desplazamientoY = img.offsetTop;
             e.preventDefault();
         }
+
         function arrastrarImagen(e) {
             if (!arrastrando || !areaActiva) return;
             const area = document.getElementById(areaActiva);
@@ -366,6 +359,7 @@
             img.style.left = (desplazamientoX + dx) + 'px';
             img.style.top = (desplazamientoY + dy) + 'px';
         }
+
         function soltar() {
             arrastrando = false;
             areaActiva = null;
@@ -381,6 +375,8 @@
             }
             document.getElementById('pantallaInicio').classList.add('oculto');
             indiceActual = 0; escala = 1;
+            // ✅ CARGAR IMÁGENES GUARDADAS AL ENTRAR
+            cargarGuardadas();
             if (rol === 'admin') {
                 document.getElementById('pantallaAdmin').classList.remove('oculto');
                 configurarArrastre('areaVistaAdmin');
@@ -392,6 +388,7 @@
                 mostrarActualEsp();
             }
         }
+
         function configurarArrastre(areaId) {
             const area = document.getElementById(areaId);
             area.addEventListener('mousedown', e => iniciarArrastre(e, areaId));
@@ -399,8 +396,9 @@
             document.addEventListener('mouseup', soltar);
             area.addEventListener('touchstart', e => iniciarArrastre(e, areaId), { passive: false });
             document.addEventListener('touchmove', arrastrarImagen, { passive: false });
-            document.addEventListener('touchend', soltar);
+            area.addEventListener('touchend', soltar);
         }
+
         function cerrarSesion() {
             document.getElementById('pantallaAdmin').classList.add('oculto');
             document.getElementById('pantallaEspectador').classList.add('oculto');
@@ -416,19 +414,16 @@
                 document.getElementById('estadoCarga').className = 'aviso amarillo';
                 return;
             }
-
             const ahora = new Date();
             const fecha = obtenerFechaHoy();
             const hora = ahora.toTimeString().substring(0,8);
             let cargadas = 0;
-
+            // ✅ AL CARGAR NUEVAS, SE REEMPLAZAN LAS ANTERIORES
             imagenes = [];
-
             for (let i = 0; i < archivos.length; i++) {
                 const archivo = archivos[i];
                 const lector = new FileReader();
                 const nuevoOrden = imagenes.length + i + 1;
-
                 lector.onload = function(evt) {
                     imagenes.push({
                         id: Date.now() + Math.random().toString(36).substr(2,9),
@@ -439,14 +434,13 @@
                         datos: evt.target.result
                     });
                     cargadas++;
-
                     if (cargadas === archivos.length) {
                         ordenar();
-                        guardar();
+                        guardar(); // ✅ SE GUARDAN PARA TODOS
                         dibujarLista();
                         mostrarActual();
                         document.getElementById('estadoCarga').innerHTML =
-                            `✅ Se eliminaron las imágenes anteriores y se cargaron ${cargadas} nueva(s) correctamente. Pulsa "Guardar y Generar PDF" para crear el reporte.`;
+                            `✅ Se cargaron ${cargadas} imagen(es) nueva(s). Se mantendrán visibles hasta que cargues otras.`;
                         document.getElementById('estadoCarga').className = 'aviso verde';
                         entrada.value = '';
                     }
@@ -461,11 +455,9 @@
                 document.getElementById('estadoCarga').className = 'aviso amarillo';
                 return;
             }
-
             const fechaHoy = obtenerFechaHoy();
             const nombreArchivo = `Seguimiento_Diario_${fechaHoy}.pdf`;
             const contenido = document.getElementById('contenidoPDF');
-
             contenido.innerHTML = `
                 <h1>📋 Seguimiento Diario</h1>
                 <div class="fecha">Fecha de generación: ${fechaHoy}</div>
@@ -476,7 +468,6 @@
                     </div>
                 `).join('')}
             `;
-
             try {
                 const canvas = await html2canvas(contenido, { scale: 2, useCORS: true });
                 const imgData = canvas.toDataURL('image/png');
@@ -485,12 +476,10 @@
                     unit: 'mm',
                     format: 'a4'
                 });
-
                 const pageWidth = pdf.internal.pageSize.getWidth();
                 const pageHeight = pdf.internal.pageSize.getHeight();
                 const imgWidth = pageWidth - 20;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
                 let heightLeft = imgHeight;
                 let position = 10;
                 pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
@@ -513,13 +502,13 @@
         }
 
         function eliminarTodo() {
-            if (!confirm('⚠️ ¿Eliminar TODAS las imágenes? Esta acción NO se puede deshacer.')) return;
+            if (!confirm('⚠️ ¿Eliminar TODAS las imágenes? Esta acción NO se puede deshacer y afectará a todos los usuarios.')) return;
             imagenes = [];
             localStorage.removeItem(CLAVE);
             indiceActual = 0; escala = 1;
             dibujarLista();
             mostrarActual();
-            document.getElementById('estadoCarga').innerHTML = '🗑️ Se eliminaron TODOS los registros correctamente.';
+            document.getElementById('estadoCarga').innerHTML = '🗑️ Se eliminaron TODOS los registros. Ahora no hay imágenes visibles.';
             document.getElementById('estadoCarga').className = 'aviso rojo';
         }
 
@@ -567,15 +556,17 @@
                 </div>
             `).join('');
         }
+
         function eliminar(pos) {
             if (!confirm(`¿Eliminar "${imagenes[pos].nombre}"?`)) return;
             imagenes.splice(pos, 1);
             imagenes.forEach((img, i) => img.orden = i + 1);
-            guardar();
+            guardar(); // ✅ Se guarda el cambio
             if (indiceActual >= imagenes.length) indiceActual = Math.max(0, imagenes.length - 1);
             dibujarLista();
             mostrarActual();
         }
+
         function subir(pos) {
             if (pos === 0) return;
             [imagenes[pos-1].orden, imagenes[pos].orden] = [imagenes[pos].orden, imagenes[pos-1].orden];
@@ -584,6 +575,7 @@
             else if (indiceActual === pos-1) indiceActual++;
             mostrarActual();
         }
+
         function bajar(pos) {
             if (pos === imagenes.length - 1) return;
             [imagenes[pos+1].orden, imagenes[pos].orden] = [imagenes[pos].orden, imagenes[pos+1].orden];
@@ -592,6 +584,7 @@
             else if (indiceActual === pos+1) indiceActual--;
             mostrarActual();
         }
+
         function irA(pos) { indiceActual = pos; escala = 1; mostrarActual(); }
 
         function mostrarActual() {
@@ -611,6 +604,7 @@
             area.innerHTML = `<img src="${img.datos}" alt="${img.nombre}" style="transform:scale(1); left:50%; top:50%; margin-left:-150px; margin-top:-75px;">`;
             actualizarFlechas('admin');
         }
+
         function anterior() { if (indiceActual > 0) { indiceActual--; escala = 1; mostrarActual(); } }
         function siguiente() { if (indiceActual < imagenes.length - 1) { indiceActual++; escala = 1; mostrarActual(); } }
         function acercar() { escala *= 1.3; aplicarZoom('areaVistaAdmin'); }
@@ -642,6 +636,7 @@
             area.innerHTML = `<img src="${img.datos}" alt="${img.nombre}" style="transform:scale(1); left:50%; top:50%; margin-left:-150px; margin-top:-75px;">`;
             actualizarFlechas('esp');
         }
+
         function anteriorEsp() { if (indiceActual > 0) { indiceActual--; escala = 1; mostrarActualEsp(); } }
         function siguienteEsp() { if (indiceActual < imagenes.length - 1) { indiceActual++; escala = 1; mostrarActualEsp(); } }
         function acercarEsp() { escala *= 1.3; aplicarZoom('areaVistaEsp'); }
