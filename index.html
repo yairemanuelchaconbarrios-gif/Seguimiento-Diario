@@ -8,7 +8,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-    <!-- jsPDF + html2canvas -->
+    <!-- PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -71,6 +71,7 @@
         .boton-acceso.espectador { border-top: 6px solid var(--verde-brillante); background: linear-gradient(white, #F0FFF8); }
         .cabecera { background: linear-gradient(135deg, var(--azul-profundo), var(--azul-brillante)); color: white; padding: 16px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
         .cabecera h1 { font-size: 1.3em; display: flex; align-items: center; gap: 10px; }
+        .estado-nube { font-size: 0.85em; background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 20px; }
         .boton-salir { background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 18px; border-radius: 10px; cursor: pointer; font-weight: 500; transition: all 0.25s; }
         .boton-salir:hover { background: rgba(255,255,255,0.35); transform: scale(1.05); }
         .contenedor { max-width: 1450px; margin: 0 auto; padding: 25px; }
@@ -105,36 +106,15 @@
         .orden-numero { font-weight: bold; color: var(--azul-profundo); min-width: 28px; display: inline-block; text-align: center; font-size: 1.1em; background: var(--celeste); border-radius: 50%; padding: 3px 0; height: 28px; }
         .visor-seccion { background: white; border-radius: 18px; padding: 28px; box-shadow: var(--sombra-destacada); border-left: 5px solid var(--verde-brillante); }
         .visor-seccion h2 { font-size: 1.15em; color: var(--verde-oscuro); margin-bottom: 10px; }
-        .fecha-visor {
-            text-align: center; font-size: 28px; font-weight: 800; color: var(--azul-profundo);
-            background: linear-gradient(90deg, #E6F7FF, #CCEEFF);
-            padding: 12px 25px; border-radius: 12px; margin-bottom: 18px;
-            border: 3px solid var(--azul-brillante); letter-spacing: 1px;
-        }
+        .fecha-visor { text-align: center; font-size: 24px; font-weight: 800; color: var(--azul-profundo); background: linear-gradient(90deg, #E6F7FF, #CCEEFF); padding: 12px 25px; border-radius: 12px; margin-bottom: 18px; border: 3px solid var(--azul-brillante); letter-spacing: 1px; }
         .visor-principal { display: flex; flex-direction: column; align-items: center; width: 100%; }
         .visor-con-flechas { display: flex; align-items: center; justify-content: center; width: 100%; gap: 12px; margin-bottom: 18px; }
-        .btn-flecha-lado {
-            background: linear-gradient(135deg, var(--azul-brillante), var(--azul-profundo));
-            color: white; border: none; font-size: 26px; width: 54px; height: 130px;
-            border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: all 0.25s; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0, 51, 102, 0.2);
-        }
+        .btn-flecha-lado { background: linear-gradient(135deg, var(--azul-brillante), var(--azul-profundo)); color: white; border: none; font-size: 26px; width: 54px; height: 130px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.25s; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0, 51, 102, 0.2); }
         .btn-flecha-lado:hover { background: linear-gradient(135deg, var(--azul-profundo), #002244); transform: scale(1.08); }
         .btn-flecha-lado:disabled { background: linear-gradient(#B8C8DC, #94A3B8); cursor: not-allowed; opacity: 0.6; transform: none; box-shadow: none; }
-        .area-vista {
-            flex: 1; min-height: 450px; height: 450px;
-            display: flex; align-items: center; justify-content: center;
-            background: linear-gradient(135deg, #F8FAFC, #EFF6FF);
-            border-radius: 16px; border: 2px solid var(--gris-claro);
-            overflow: hidden; min-width: 220px;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
-            cursor: grab; position: relative;
-        }
+        .area-vista { flex: 1; min-height: 450px; height: 450px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #F8FAFC, #EFF6FF); border-radius: 16px; border: 2px solid var(--gris-claro); overflow: hidden; min-width: 220px; box-shadow: inset 0 2px 8px rgba(0,0,0,0.05); cursor: grab; position: relative; }
         .area-vista:active { cursor: grabbing; }
-        .area-vista img {
-            position: absolute; user-select: none; pointer-events: none;
-            transform-origin: center center; transition: transform 0.1s ease;
-        }
+        .area-vista img { position: absolute; user-select: none; pointer-events: none; transform-origin: center center; transition: transform 0.1s ease; max-width: 90%; max-height: 90%; object-fit: contain; }
         .aviso-sin { text-align: center; padding: 60px; color: var(--gris-medio); font-size: 1.1em; }
         .barra-controles { display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap; padding: 16px; background: linear-gradient(135deg, #F0F4F8, #E6F0FA); border-radius: 14px; width: 100%; border: 1px solid var(--gris-claro); }
         .indicador { font-size: 17px; font-weight: 700; color: var(--azul-profundo); min-width: 110px; text-align: center; }
@@ -149,12 +129,12 @@
         .pdf-oculto .img-pdf { margin-bottom: 25px; text-align: center; }
         .pdf-oculto .img-pdf img { max-width: 100%; border: 1px solid #CBD5E1; border-radius: 6px; }
         .pdf-oculto .img-pdf .nombre { font-weight: 600; color: #1E293B; margin-top: 8px; font-size: 13px; }
-        .sincronizando { display: inline-block; animation: girar 1s linear infinite; margin-right: 6px; }
+        .cargando { display: inline-block; animation: girar 1s linear infinite; }
         @keyframes girar { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @media (max-width: 600px) {
             .visor-con-flechas { flex-direction: column; }
             .btn-flecha-lado { width: 130px; height: 52px; }
-            .fecha-visor { font-size: 20px; }
+            .fecha-visor { font-size: 18px; }
             .persona-reportes { width: 140px; height: 140px; }
             .persona-reportes::after { font-size: 70px; }
         }
@@ -167,7 +147,7 @@
     <div class="pantalla-inicio" id="pantallaInicio">
         <div class="logo-titulo">
             <h2>Bienvenido al Sistema Compartido</h2>
-            <p>Las imágenes se sincronizan en tiempo real para todos los usuarios</p>
+            <p>Lo que sube el administrador aparece en todos los dispositivos automáticamente 🌐</p>
         </div>
         <div class="persona-reportes">
             <span class="reporte-icon">📝</span>
@@ -175,13 +155,13 @@
         <div class="contenedor-botones">
             <button class="boton-acceso administrador" onclick="ingresarComo('admin')">
                 <div class="icono">🔐</div>
-                <h2>Ingresar como Administrador</h2>
-                <p>Cargar, administrar y generar reportes</p>
+                <h2>Administrador</h2>
+                <p>Subir imágenes y gestionar</p>
             </button>
             <button class="boton-acceso espectador" onclick="ingresarComo('espectador')">
                 <div class="icono">👁️</div>
-                <h2>Ingresar como Espectador</h2>
-                <p>Ver imágenes en tiempo real</p>
+                <h2>Espectador</h2>
+                <p>Ver imágenes compartidas</p>
             </button>
         </div>
     </div>
@@ -191,25 +171,25 @@
         <div class="cabecera">
             <h1>🔐 Panel de Administración</h1>
             <div style="display:flex; gap:12px; align-items:center;">
-                <span id="estadoSincro" style="font-size:0.9em;">✅ Sincronizado</span>
+                <span class="estado-nube" id="estadoNubeAdmin">🔄 Conectando...</span>
                 <button class="boton-salir" onclick="cerrarSesion()">🚪 Salir</button>
             </div>
         </div>
         <div class="contenedor">
             <div class="panel-admin">
-                <h2>📤 Cargar Imágenes</h2>
+                <h2>☁️ Subir Imágenes a la Nube</h2>
                 <div class="aviso azul">
-                    🌐 Las imágenes se subirán a la nube y aparecerán en todos los dispositivos conectados.
+                    🌐 Las imágenes se suben a internet y aparecen en TODOS los dispositivos al instante.
                 </div>
                 <div class="area-carga">
                     <p>Selecciona una o varias imágenes</p>
                     <input type="file" id="cargarImagenes" multiple accept="image/*" style="margin:15px 0; font-size:15px;">
                     <div class="grupo-botones-carga">
-                        <button class="btn btn-azul" id="btnSubir" onclick="subirImagenes()">☁️ Subir a la Nube</button>
-                        <button class="btn btn-verde" onclick="generarPDF()">💾 Generar PDF</button>
+                        <button class="btn btn-azul" id="btnSubir" onclick="subirImagenes()">☁️ Subir y Compartir</button>
+                        <button class="btn btn-verde" onclick="generarPDF()">📄 Descargar PDF</button>
                     </div>
                 </div>
-                <div class="aviso azul" id="estadoCarga">Selecciona imágenes y pulsa "Subir a la Nube"</div>
+                <div class="aviso azul" id="estadoCarga">Selecciona imágenes y pulsa "Subir y Compartir"</div>
                 <div class="encabezado-lista">
                     <h2>📋 Imágenes Compartidas</h2>
                     <button class="btn-rojo-grande" id="btnEliminarTodo" onclick="eliminarTodo()">🗑️ Eliminar Todas</button>
@@ -223,7 +203,7 @@
                     <div class="visor-con-flechas">
                         <button class="btn-flecha-lado" id="btnIzqAdmin" onclick="anterior()">◀</button>
                         <div class="area-vista" id="areaVistaAdmin">
-                            <div class="aviso-sin">Esperando imágenes desde la nube...</div>
+                            <div class="aviso-sin">Esperando imágenes...</div>
                         </div>
                         <button class="btn-flecha-lado" id="btnDerAdmin" onclick="siguiente()">▶</button>
                     </div>
@@ -246,7 +226,7 @@
         <div class="cabecera" style="background: linear-gradient(135deg, var(--verde-brillante), var(--verde-oscuro));">
             <h1>👁️ Visor Compartido</h1>
             <div style="display:flex; gap:12px; align-items:center;">
-                <span id="estadoSincroEsp" style="font-size:0.9em;">✅ En vivo</span>
+                <span class="estado-nube" id="estadoNubeEsp">🔄 Conectando...</span>
                 <button class="boton-salir" onclick="cerrarSesion()">🚪 Salir</button>
             </div>
         </div>
@@ -258,7 +238,7 @@
                     <div class="visor-con-flechas">
                         <button class="btn-flecha-lado" id="btnIzqEsp" onclick="anteriorEsp()">◀</button>
                         <div class="area-vista" id="areaVistaEsp">
-                            <div class="aviso-sin">Esperando imágenes del administrador...</div>
+                            <div class="aviso-sin">El administrador aún no ha subido imágenes.<br>Se actualizará automáticamente cuando lo haga.</div>
                         </div>
                         <button class="btn-flecha-lado" id="btnDerEsp" onclick="siguienteEsp()">▶</button>
                     </div>
@@ -280,36 +260,34 @@
 
     <script>
         // ==========================================================
-        // 🔧 CONFIGURACIÓN DE FIREBASE — PON TUS DATOS AQUÍ
+        // 🔧 PEGA TUS DATOS DE FIREBASE AQUÍ DEBAJO
         // ==========================================================
         const CONFIGURACION_FIREBASE = {
-            apiKey: "AIzaSyC_XXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-            authDomain: "tu-proyecto.firebaseapp.com",
-            databaseURL: "https://tu-proyecto-default-rtdb.firebaseio.com",
-            projectId: "tu-proyecto",
-            storageBucket: "tu-proyecto.appspot.com",
-            messagingSenderId: "123456789012",
-            appId: "1:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+            apiKey: "PON_TU_apiKey_AQUÍ",
+            authDomain: "PON_TU_authDomain_AQUÍ",
+            databaseURL: "PON_TU_databaseURL_AQUÍ",
+            projectId: "PON_TU_projectId_AQUÍ",
+            storageBucket: "PON_TU_storageBucket_AQUÍ",
+            messagingSenderId: "PON_TU_messagingSenderId_AQUÍ",
+            appId: "PON_TU_appId_AQUÍ"
         };
-
-        // CONTRASEÑA DE ADMINISTRADOR
-        const CONTRASEÑA_ADMIN = 'chacon';
+        // ==========================================================
+        const CONTRASEÑA_ADMIN = 'chacon'; // Cambia tu contraseña aquí
+        // ==========================================================
 
         // Inicializar Firebase
         firebase.initializeApp(CONFIGURACION_FIREBASE);
-        const baseDatos = firebase.database();
-        const almacenamiento = firebase.storage();
-        const refImagenes = baseDatos.ref('imagenes_compartidas');
+        const db = firebase.database();
+        const storage = firebase.storage();
+        const refImgs = db.ref('imagenes_compartidas');
 
         // Variables globales
         const { jsPDF } = window.jspdf;
         let imagenes = [];
         let indiceActual = 0;
         let escala = 1;
-        let posX = 0, posY = 0;
-        let desplazamientoX = 0, desplazamientoY = 0;
-        let arrastrando = false;
-        let areaActiva = null;
+        let posX = 0, posY = 0, descX = 0, descY = 0;
+        let arrastrando = false, areaActiva = null;
         let rolActual = null;
         let escuchando = false;
 
@@ -320,56 +298,45 @@
             if (escuchando) return;
             escuchando = true;
             
-            refImagenes.on('value', (snapshot) => {
-                const datos = snapshot.val();
-                imagenes = datos ? Object.values(datos).map(img => img) : [];
-                imagenes.sort((a, b) => a.orden - b.orden);
+            refImgs.on('value', (snap) => {
+                const datos = snap.val();
+                imagenes = datos ? Object.values(datos).sort((a,b) => a.orden - b.orden) : [];
+                actualizarEstado();
                 
-                if (rolActual === 'admin') {
-                    dibujarLista();
-                    mostrarActual();
-                } else if (rolActual === 'espectador') {
-                    mostrarActualEsp();
-                }
-                actualizarEstadoSincro();
-            }, (error) => {
-                console.error('Error de sincronización:', error);
-                mostrarAviso('Error de conexión: ' + error.message, 'rojo');
+                if (rolActual === 'admin') { dibujarLista(); mostrarActual(); }
+                else if (rolActual === 'espectador') { mostrarActualEsp(); }
+            }, (err) => {
+                console.error('Error sincro:', err);
+                estadoNube('❌ Error: ' + err.message, 'rojo');
             });
         }
 
-        function detenerEscucha() {
-            refImagenes.off();
-            escuchando = false;
+        function detenerEscucha() { refImgs.off(); escuchando = false; }
+
+        function estadoNube(texto) {
+            const a = document.getElementById('estadoNubeAdmin');
+            const e = document.getElementById('estadoNubeEsp');
+            if(a) a.textContent = texto;
+            if(e) e.textContent = texto;
         }
 
-        function actualizarEstadoSincro() {
-            const estado = imagenes.length > 0 
-                ? `✅ ${imagenes.length} imagen(es) sincronizada(s)` 
-                : '✅ Conectado — sin imágenes';
-            
-            const elAdmin = document.getElementById('estadoSincro');
-            const elEsp = document.getElementById('estadoSincroEsp');
-            if (elAdmin) elAdmin.textContent = estado;
-            if (elEsp) elEsp.textContent = estado;
+        function actualizarEstado() {
+            estadoNube(imagenes.length > 0 
+                ? `✅ ${imagenes.length} imagen(es) compartida(s)` 
+                : '✅ Conectado — sin imágenes');
         }
 
         // ==========================================================
-        // 🔐 ACCESO Y NAVEGACIÓN
+        // 🔐 ACCESO
         // ==========================================================
         function ingresarComo(rol) {
             if (rol === 'admin') {
                 const clave = prompt('🔐 Contraseña de Administrador:');
-                if (clave !== CONTRASEÑA_ADMIN) {
-                    alert('❌ Contraseña incorrecta');
-                    return;
-                }
+                if (clave !== CONTRASEÑA_ADMIN) return alert('❌ Contraseña incorrecta');
             }
-            
             rolActual = rol;
             document.getElementById('pantallaInicio').classList.add('oculto');
             indiceActual = 0; escala = 1;
-            
             iniciarEscucha();
             
             if (rol === 'admin') {
@@ -382,10 +349,7 @@
         }
 
         function cerrarSesion() {
-            detenerEscucha();
-            rolActual = null;
-            imagenes = [];
-            indiceActual = 0;
+            detenerEscucha(); rolActual = null; imagenes = [];
             document.getElementById('pantallaAdmin').classList.add('oculto');
             document.getElementById('pantallaEspectador').classList.add('oculto');
             document.getElementById('pantallaInicio').classList.remove('oculto');
@@ -397,179 +361,54 @@
         async function subirImagenes() {
             const entrada = document.getElementById('cargarImagenes');
             const archivos = entrada.files;
+            if (!archivos.length) return aviso('⚠️ Selecciona imágenes primero', 'amarillo');
             
-            if (!archivos.length) {
-                mostrarAviso('⚠️ Selecciona al menos una imagen', 'amarillo');
-                return;
-            }
+            const btn = document.getElementById('btnSubir');
+            btn.disabled = true;
+            aviso('<span class="cargando">☁️</span> Subiendo...', 'azul');
             
-            estadoSubida(true);
-            const fecha = obtenerFechaHoy();
-            const ahora = new Date();
-            const hora = ahora.toTimeString().substring(0, 8);
+            const fecha = hoyFecha();
+            const hora = new Date().toTimeString().slice(0,8);
             let subidas = 0;
-            const nuevasImagenes = [];
-            
+
             try {
                 for (let i = 0; i < archivos.length; i++) {
-                    const archivo = archivos[i];
-                    const id = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-                    const ruta = `imagenes/${fecha}/${id}_${archivo.name}`;
+                    const arch = archivos[i];
+                    const id = Date.now() + '-' + Math.random().toString(36).slice(2,10);
+                    const ruta = `imagenes/${fecha}/${id}_${arch.name}`;
                     
-                    // Subir a Firebase Storage
-                    const refArchivo = almacenamiento.ref(ruta);
-                    await refArchivo.put(archivo);
-                    const url = await refArchivo.getDownloadURL();
+                    // Subir archivo
+                    const refArch = storage.ref(ruta);
+                    await refArch.put(arch);
+                    const url = await refArch.getDownloadURL();
                     
-                    nuevasImagenes.push({
-                        id: id,
-                        nombre: archivo.name,
-                        fecha: fecha,
-                        hora: hora,
-                        orden: imagenes.length + i + 1,
-                        url: url,
-                        subidoPor: 'admin'
-                    });
+                    const nuevaImg = {
+                        id, nombre: arch.name, fecha, hora,
+                        orden: imagenes.length + subidas + 1, url
+                    };
+                    
+                    await refImgs.child(id).set(nuevaImg);
                     subidas++;
                 }
                 
-                // Guardar en la base de datos
-                nuevasImagenes.forEach(img => {
-                    refImagenes.child(img.id).set(img);
-                });
-                
-                mostrarAviso(`✅ ${subidas} imagen(es) subida(s) y compartida(s)`, 'verde');
+                aviso(`✅ ${subidas} imagen(es) compartida(s) con todos`, 'verde');
                 entrada.value = '';
                 
-            } catch (error) {
-                console.error('Error al subir:', error);
-                mostrarAviso('❌ Error: ' + error.message, 'rojo');
+            } catch (err) {
+                console.error(err);
+                aviso('❌ Error: ' + err.message, 'rojo');
             } finally {
-                estadoSubida(false);
-            }
-        }
-
-        function estadoSubida(subiendo) {
-            document.getElementById('btnSubir').disabled = subiendo;
-            if (subiendo) {
-                document.getElementById('estadoCarga').innerHTML = '<span class="sincronizando">☁️</span> Subiendo...';
-                document.getElementById('estadoCarga').className = 'aviso azul';
-            } else {
-                document.getElementById('estadoCarga').textContent = 'Listo para subir más imágenes';
-                document.getElementById('estadoCarga').className = 'aviso azul';
+                btn.disabled = false;
             }
         }
 
         // ==========================================================
-        // 📋 FUNCIONES DE ADMINISTRACIÓN
+        // 📋 LISTA Y ACCIONES
         // ==========================================================
-        async function eliminar(pos) {
-            if (!confirm(`¿Eliminar "${imagenes[pos].nombre}"?`)) return;
-            const img = imagenes[pos];
-            
-            try {
-                // Eliminar de la base de datos
-                await refImagenes.child(img.id).remove();
-                reordenar();
-                mostrarAviso(`🗑️ Eliminada: ${img.nombre}`, 'verde');
-            } catch (error) {
-                mostrarAviso('❌ Error al eliminar: ' + error.message, 'rojo');
-            }
-        }
-
-        async function eliminarTodo() {
-            if (!confirm('⚠️ ¿Eliminar TODAS las imágenes? Esto afecta a TODOS los usuarios. No se puede deshacer.')) return;
-            
-            try {
-                await refImagenes.remove();
-                mostrarAviso('🗑️ Se eliminaron todas las imágenes compartidas', 'rojo');
-                indiceActual = 0;
-            } catch (error) {
-                mostrarAviso('❌ Error: ' + error.message, 'rojo');
-            }
-        }
-
-        async function reordenar() {
-            // Actualizar números de orden en Firebase
-            const actualizadas = {};
-            imagenes.forEach((img, i) => {
-                img.orden = i + 1;
-                actualizadas[img.id + '/orden'] = i + 1;
-            });
-            await refImagenes.update(actualizadas);
-        }
-
-        async function subirPos(pos) {
-            if (pos === 0) return;
-            [imagenes[pos-1].orden, imagenes[pos].orden] = [imagenes[pos].orden, imagenes[pos-1].orden];
-            await refImagenes.update({
-                [imagenes[pos-1].id + '/orden']: imagenes[pos-1].orden,
-                [imagenes[pos].id + '/orden']: imagenes[pos].orden
-            });
-            if (indiceActual === pos) indiceActual--;
-            else if (indiceActual === pos-1) indiceActual++;
-        }
-
-        async function bajarPos(pos) {
-            if (pos === imagenes.length - 1) return;
-            [imagenes[pos+1].orden, imagenes[pos].orden] = [imagenes[pos].orden, imagenes[pos+1].orden];
-            await refImagenes.update({
-                [imagenes[pos+1].id + '/orden']: imagenes[pos+1].orden,
-                [imagenes[pos].id + '/orden']: imagenes[pos].orden
-            });
-            if (indiceActual === pos) indiceActual++;
-            else if (indiceActual === pos+1) indiceActual--;
-        }
-
-        function irA(pos) { indiceActual = pos; escala = 1; mostrarActual(); }
-
-        // ==========================================================
-        // 🖼️ VISOR Y NAVEGACIÓN
-        // ==========================================================
-        function mostrarActual() {
-            const area = document.getElementById('areaVistaAdmin');
-            const ind = document.getElementById('indicador');
-            
-            if (imagenes.length === 0) {
-                area.innerHTML = '<div class="aviso-sin">Sube imágenes para que aparezcan aquí y en todos los dispositivos.</div>';
-                ind.textContent = '0 / 0';
-                actualizarFechaVisor(null);
-                actualizarFlechas('admin');
-                return;
-            }
-            
-            const img = imagenes[indiceActual];
-            ind.textContent = `${indiceActual + 1} / ${imagenes.length}`;
-            actualizarFechaVisor(img.fecha);
-            escala = 1;
-            area.innerHTML = `<img src="${img.url}" alt="${img.nombre}" style="transform:scale(1); left:50%; top:50%; margin-left:-150px; margin-top:-75px;">`;
-            actualizarFlechas('admin');
-        }
-
-        function mostrarActualEsp() {
-            const area = document.getElementById('areaVistaEsp');
-            const ind = document.getElementById('indicadorEsp');
-            
-            if (imagenes.length === 0) {
-                area.innerHTML = '<div class="aviso-sin">El administrador aún no ha subido imágenes.</div>';
-                ind.textContent = '0 / 0';
-                actualizarFechaVisor(null);
-                actualizarFlechas('esp');
-                return;
-            }
-            
-            const img = imagenes[indiceActual];
-            ind.textContent = `${indiceActual + 1} / ${imagenes.length}`;
-            actualizarFechaVisor(img.fecha);
-            escala = 1;
-            area.innerHTML = `<img src="${img.url}" alt="${img.nombre}" style="transform:scale(1); left:50%; top:50%; margin-left:-150px; margin-top:-75px;">`;
-            actualizarFlechas('esp');
-        }
-
         function dibujarLista() {
             const caja = document.getElementById('listaImagenes');
-            if (imagenes.length === 0) {
-                caja.innerHTML = '<p style="color:var(--gris-medio);">No hay imágenes compartidas aún.</p>';
+            if (!imagenes.length) {
+                caja.innerHTML = '<p style="color:var(--gris-medio)">No hay imágenes compartidas.</p>';
                 return;
             }
             caja.innerHTML = imagenes.map((img, pos) => `
@@ -578,18 +417,100 @@
                         <span class="orden-numero">${img.orden}</span>
                         <span>🖼️</span>
                         <div>
-                            <div style="font-weight:600; color:var(--gris-oscuro);">${img.nombre}</div>
-                            <div style="font-size:0.85em; color:var(--gris-medio);">${img.fecha} ${img.hora}</div>
+                            <div style="font-weight:600">${img.nombre}</div>
+                            <div style="font-size:0.85em;color:var(--gris-medio)">${img.fecha} ${img.hora}</div>
                         </div>
                     </div>
                     <div class="acciones">
-                        <button class="btn-orden" onclick="subirPos(${pos})">⬆</button>
-                        <button class="btn-orden" onclick="bajarPos(${pos})">⬇</button>
-                        <button class="btn-naranja" onclick="irA(${pos})">👁 Ver</button>
-                        <button class="btn-morado" onclick="eliminar(${pos})">🗑</button>
+                        <button class="btn-orden" onclick="moverArriba(${pos})">⬆</button>
+                        <button class="btn-orden" onclick="moverAbajo(${pos})">⬇</button>
+                        <button class="btn-naranja" onclick="irA(${pos})">👁</button>
+                        <button class="btn-morado" onclick="borrarUna(${pos})">🗑</button>
                     </div>
                 </div>
             `).join('');
+        }
+
+        async function borrarUna(pos) {
+            if (!confirm(`¿Eliminar "${imagenes[pos].nombre}"?`)) return;
+            await refImgs.child(imagenes[pos].id).remove();
+            await reordenarTodo();
+            if (indiceActual >= imagenes.length - 1) indiceActual = Math.max(0, imagenes.length - 2);
+        }
+
+        async function eliminarTodo() {
+            if (!confirm('⚠️ ¿Eliminar TODAS? Se borrará para TODOS los usuarios. No se puede deshacer.')) return;
+            await refImgs.remove();
+            indiceActual = 0;
+        }
+
+        async function moverArriba(pos) {
+            if (pos === 0) return;
+            [imagenes[pos-1].orden, imagenes[pos].orden] = [imagenes[pos].orden, imagenes[pos-1].orden];
+            await refImgs.update({
+                [imagenes[pos-1].id + '/orden']: imagenes[pos-1].orden,
+                [imagenes[pos].id + '/orden']: imagenes[pos].orden
+            });
+            if (indiceActual === pos) indiceActual--;
+            else if (indiceActual === pos-1) indiceActual++;
+        }
+
+        async function moverAbajo(pos) {
+            if (pos === imagenes.length - 1) return;
+            [imagenes[pos+1].orden, imagenes[pos].orden] = [imagenes[pos].orden, imagenes[pos+1].orden];
+            await refImgs.update({
+                [imagenes[pos+1].id + '/orden']: imagenes[pos+1].orden,
+                [imagenes[pos].id + '/orden']: imagenes[pos].orden
+            });
+            if (indiceActual === pos) indiceActual++;
+            else if (indiceActual === pos+1) indiceActual--;
+        }
+
+        async function reordenarTodo() {
+            const act = {};
+            imagenes.forEach((img, i) => { img.orden = i+1; act[img.id + '/orden'] = i+1; });
+            await refImgs.update(act);
+        }
+
+        function irA(pos) { indiceActual = pos; escala = 1; mostrarActual(); }
+
+        // ==========================================================
+        // 🖼️ VISOR
+        // ==========================================================
+        function mostrarActual() {
+            const area = document.getElementById('areaVistaAdmin');
+            const ind = document.getElementById('indicador');
+            if (!imagenes.length) {
+                area.innerHTML = '<div class="aviso-sin">Sube imágenes para compartirlas.</div>';
+                ind.textContent = '0 / 0';
+                fechaVisor(null);
+                flechas('admin');
+                return;
+            }
+            const img = imagenes[indiceActual];
+            ind.textContent = `${indiceActual+1} / ${imagenes.length}`;
+            fechaVisor(img.fecha);
+            escala = 1;
+            area.innerHTML = `<img src="${img.url}" alt="${img.nombre}" style="transform:scale(1); left:50%; top:50%; margin-left:-150px; margin-top:-75px;">`;
+            flechas('admin');
+        }
+
+        function mostrarActualEsp() {
+            const area = document.getElementById('areaVistaEsp');
+            const ind = document.getElementById('indicadorEsp');
+            if (!imagenes.length) {
+                area.innerHTML = '<div class="aviso-sin">Esperando imágenes del administrador...</div>';
+                ind.textContent = '0 / 0';
+                fechaVisor(null);
+                flechas('esp');
+                return;
+            }
+            const img = imagenes[indiceActual];
+            ind.textContent = `${indiceActual+1} / ${imagenes.length}`;
+            fechaVisor(img.fecha);
+            escala = 1;
+            area.innerHTML = `<img src="${img.url}" alt="${img.nombre}" style="transform:scale(1); left:50%; top:50%; margin-left:-150px; margin-top:-75px;">`;
+            flechas('esp');
         }
 
         function anterior() { if (indiceActual > 0) { indiceActual--; escala = 1; mostrarActual(); } }
@@ -604,8 +525,8 @@
         function acercarEsp() { escala *= 1.3; aplicarZoom('areaVistaEsp'); }
         function alejarEsp() { escala /= 1.3; aplicarZoom('areaVistaEsp'); }
         function restablecerEsp() { escala = 1; mostrarActualEsp(); }
-        function aplicarZoom(areaId) {
-            const img = document.getElementById(areaId)?.querySelector('img');
+        function aplicarZoom(id) {
+            const img = document.getElementById(id)?.querySelector('img');
             if (img) img.style.transform = `scale(${escala})`;
         }
 
@@ -613,122 +534,106 @@
         function pantallaCompleta() { document.getElementById('areaVistaAdmin').requestFullscreen?.(); }
         function pantallaCompletaEsp() { document.getElementById('areaVistaEsp').requestFullscreen?.(); }
 
-        // Arrastre de imagen
-        function iniciarArrastre(e, areaId) {
-            const img = document.getElementById(areaId)?.querySelector('img');
+        // Arrastre
+        function iniciarArrastre(e, id) {
+            const img = document.getElementById(id)?.querySelector('img');
             if (!img) return;
-            areaActiva = areaId;
-            arrastrando = true;
+            areaActiva = id; arrastrando = true;
             posX = e.clientX || e.touches?.[0]?.clientX;
             posY = e.clientY || e.touches?.[0]?.clientY;
-            desplazamientoX = img.offsetLeft;
-            desplazamientoY = img.offsetTop;
+            descX = img.offsetLeft; descY = img.offsetTop;
             e.preventDefault();
         }
-        function arrastrarImagen(e) {
+        function arrastrar(e) {
             if (!arrastrando) return;
             const img = document.getElementById(areaActiva)?.querySelector('img');
             if (!img) return;
             e.preventDefault();
             const dx = (e.clientX || e.touches?.[0]?.clientX) - posX;
             const dy = (e.clientY || e.touches?.[0]?.clientY) - posY;
-            img.style.left = (desplazamientoX + dx) + 'px';
-            img.style.top = (desplazamientoY + dy) + 'px';
+            img.style.left = (descX + dx) + 'px';
+            img.style.top = (descY + dy) + 'px';
         }
         function soltar() { arrastrando = false; areaActiva = null; }
-        function configurarArrastre(areaId) {
-            const area = document.getElementById(areaId);
-            area.addEventListener('mousedown', e => iniciarArrastre(e, areaId));
-            document.addEventListener('mousemove', arrastrarImagen);
+        function configurarArrastre(id) {
+            const el = document.getElementById(id);
+            el.addEventListener('mousedown', e => iniciarArrastre(e, id));
+            document.addEventListener('mousemove', arrastrar);
             document.addEventListener('mouseup', soltar);
-            area.addEventListener('touchstart', e => iniciarArrastre(e, areaId), { passive: false });
-            document.addEventListener('touchmove', arrastrarImagen, { passive: false });
-            area.addEventListener('touchend', soltar);
+            el.addEventListener('touchstart', e => iniciarArrastre(e, id), {passive:false});
+            document.addEventListener('touchmove', arrastrar, {passive:false});
+            el.addEventListener('touchend', soltar);
         }
 
         // ==========================================================
-        // 📄 GENERAR PDF
+        // 📄 PDF
         // ==========================================================
         async function generarPDF() {
-            if (imagenes.length === 0) {
-                mostrarAviso('⚠️ No hay imágenes para generar el PDF', 'amarillo');
-                return;
-            }
+            if (!imagenes.length) return aviso('⚠️ No hay imágenes para generar PDF', 'amarillo');
             
-            const fechaHoy = obtenerFechaHoy();
-            const nombreArchivo = `Seguimiento_Diario_${fechaHoy}.pdf`;
-            const contenido = document.getElementById('contenidoPDF');
+            const fecha = hoyFecha();
+            const nombre = `Seguimiento_Diario_${fecha}.pdf`;
+            const caja = document.getElementById('contenidoPDF');
             
-            contenido.innerHTML = `
+            caja.innerHTML = `
                 <h1>📋 Seguimiento Diario</h1>
-                <div class="fecha">Fecha de generación: ${fechaHoy}</div>
+                <div class="fecha">Generado: ${fecha}</div>
                 ${imagenes.map(img => `
                     <div class="img-pdf">
                         <img src="${img.url}" alt="${img.nombre}" crossorigin="anonymous">
-                        <div class="nombre">📄 ${img.nombre} — ${img.fecha} ${img.hora}</div>
+                        <div class="nombre">${img.nombre} — ${img.fecha} ${img.hora}</div>
                     </div>
                 `).join('')}
             `;
-            
+
             try {
-                const canvas = await html2canvas(contenido, { scale: 2, useCORS: true });
+                const canvas = await html2canvas(caja, {scale:2, useCORS:true});
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF({
                     orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
-                    unit: 'mm',
-                    format: 'a4'
+                    unit: 'mm', format: 'a4'
                 });
+                const w = pdf.internal.pageSize.getWidth();
+                const h = pdf.internal.pageSize.getHeight();
+                const anchoImg = w - 20;
+                const altoImg = (canvas.height * anchoImg) / canvas.width;
+                let restante = altoImg;
+                let y = 10;
                 
-                const pageWidth = pdf.internal.pageSize.getWidth();
-                const pageHeight = pdf.internal.pageSize.getHeight();
-                const imgWidth = pageWidth - 20;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 10;
-                
-                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-                
-                while (heightLeft > 0) {
-                    position = heightLeft - imgHeight + 10;
+                pdf.addImage(imgData, 'PNG', 10, y, anchoImg, altoImg);
+                restante -= h;
+                while (restante > 0) {
+                    y = restante - altoImg + 10;
                     pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
+                    pdf.addImage(imgData, 'PNG', 10, y, anchoImg, altoImg);
+                    restante -= h;
                 }
-                
-                pdf.save(nombreArchivo);
-                mostrarAviso(`✅ PDF generado: ${nombreArchivo}`, 'verde');
+                pdf.save(nombre);
+                aviso(`✅ PDF descargado: ${nombre}`, 'verde');
             } catch (err) {
-                mostrarAviso('❌ Error al generar PDF: ' + err.message, 'rojo');
+                aviso('❌ Error: ' + err.message, 'rojo');
             }
-            
-            contenido.innerHTML = '';
+            caja.innerHTML = '';
         }
 
         // ==========================================================
         // 🔧 UTILIDADES
         // ==========================================================
-        function obtenerFechaHoy() {
-            const hoy = new Date();
-            const dd = String(hoy.getDate()).padStart(2, '0');
-            const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-            const aaaa = hoy.getFullYear();
-            return `${dd}-${mm}-${aaaa}`;
+        function hoyFecha() {
+            const d = new Date();
+            return `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()}`;
         }
-
-        function actualizarFechaVisor(fecha) {
-            const texto = fecha ? `📅 Fecha de carga: ${fecha}` : '📅 Fecha: --/--/----';
-            const elAdmin = document.getElementById('fechaVisorAdmin');
-            const elEsp = document.getElementById('fechaVisorEsp');
-            if (elAdmin) elAdmin.textContent = texto;
-            if (elEsp) elEsp.textContent = texto;
+        function fechaVisor(f) {
+            const t = f ? `📅 Fecha de carga: ${f}` : '📅 Fecha: --/--/----';
+            const a = document.getElementById('fechaVisorAdmin');
+            const e = document.getElementById('fechaVisorEsp');
+            if(a) a.textContent = t;
+            if(e) e.textContent = t;
         }
-
-        function actualizarFlechas(modo) {
+        function flechas(modo) {
             const hay = imagenes.length > 0;
             const pri = indiceActual === 0;
             const ult = indiceActual >= imagenes.length - 1;
-            
             if (modo === 'admin') {
                 document.getElementById('btnIzqAdmin').disabled = !hay || pri;
                 document.getElementById('btnDerAdmin').disabled = !hay || ult;
@@ -737,15 +642,14 @@
                 document.getElementById('btnDerEsp').disabled = !hay || ult;
             }
         }
-
-        function mostrarAviso(mensaje, tipo) {
+        function aviso(msg, tipo) {
             const el = document.getElementById('estadoCarga');
-            el.innerHTML = mensaje;
+            el.innerHTML = msg;
             el.className = `aviso ${tipo}`;
         }
 
-        // Teclas de navegación
-        document.addEventListener('keydown', (e) => {
+        // Teclas
+        document.addEventListener('keydown', e => {
             if (rolActual === 'admin' && imagenes.length) {
                 if (e.key === 'ArrowLeft') { e.preventDefault(); anterior(); }
                 if (e.key === 'ArrowRight') { e.preventDefault(); siguiente(); }
