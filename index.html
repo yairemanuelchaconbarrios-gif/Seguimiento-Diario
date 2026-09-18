@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seguimiento Diario</title>
+    <title>Seguimiento Diario — Compartido</title>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+    <!-- jsPDF + html2canvas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
@@ -35,27 +40,15 @@
         .logo-titulo h2 { font-size: 2em; color: var(--azul-profundo); margin-bottom: 10px; }
         .logo-titulo p { font-size: 1.1em; color: var(--gris-medio); }
         .persona-reportes {
-            width: 180px;
-            height: 180px;
+            width: 180px; height: 180px;
             background: radial-gradient(circle, #FFF5D6, #FFE8A3);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 30px;
-            box-shadow: var(--sombra-destacada);
-            animation: flotar 3s ease-in-out infinite;
-            position: relative;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 30px; box-shadow: var(--sombra-destacada);
+            animation: flotar 3s ease-in-out infinite; position: relative;
         }
-        .persona-reportes::after {
-            content: "🧑‍💻";
-            font-size: 90px;
-        }
+        .persona-reportes::after { content: "🧑‍💻"; font-size: 90px; }
         .persona-reportes .reporte-icon {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 35px;
+            position: absolute; top: 10px; right: 10px; font-size: 35px;
             animation: escribir 1.5s ease-in-out infinite;
         }
         @keyframes flotar {
@@ -88,6 +81,7 @@
         .grupo-botones-carga { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 15px; }
         .btn { padding: 12px 24px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 1em; transition: all 0.25s; }
         .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         .btn-azul { background: linear-gradient(135deg, var(--azul-brillante), var(--azul-profundo)); color: white; }
         .btn-azul:hover { background: linear-gradient(135deg, var(--azul-profundo), #002244); }
         .btn-verde { background: linear-gradient(135deg, var(--verde-brillante), var(--verde-oscuro)); color: white; }
@@ -102,6 +96,7 @@
         .aviso.verde { background: linear-gradient(#F0FFF8, #D9FFEC); border-color: var(--verde-brillante); color: var(--verde-oscuro); }
         .aviso.rojo { background: linear-gradient(#FFF1F3, #FFD9DD); border-color: var(--rojo-intenso); color: #B91C1C; }
         .aviso.amarillo { background: linear-gradient(#FFFBEB, #FFF3C7); border-color: var(--amarillo-dorado); color: #926300; }
+        .aviso.azul { background: linear-gradient(#E6F7FF, #CCEEFF); border-color: var(--azul-brillante); color: #004488; }
         .lista-imagenes { margin-top: 20px; }
         .encabezado-lista { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
         .item-imagen { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: linear-gradient(90deg, #F8FAFC, #EFF6FF); border-radius: 12px; margin-bottom: 10px; gap: 10px; flex-wrap: wrap; border-left: 4px solid var(--azul-claro); }
@@ -111,16 +106,10 @@
         .visor-seccion { background: white; border-radius: 18px; padding: 28px; box-shadow: var(--sombra-destacada); border-left: 5px solid var(--verde-brillante); }
         .visor-seccion h2 { font-size: 1.15em; color: var(--verde-oscuro); margin-bottom: 10px; }
         .fecha-visor {
-            text-align: center;
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--azul-profundo);
+            text-align: center; font-size: 28px; font-weight: 800; color: var(--azul-profundo);
             background: linear-gradient(90deg, #E6F7FF, #CCEEFF);
-            padding: 12px 25px;
-            border-radius: 12px;
-            margin-bottom: 18px;
-            border: 3px solid var(--azul-brillante);
-            letter-spacing: 1px;
+            padding: 12px 25px; border-radius: 12px; margin-bottom: 18px;
+            border: 3px solid var(--azul-brillante); letter-spacing: 1px;
         }
         .visor-principal { display: flex; flex-direction: column; align-items: center; width: 100%; }
         .visor-con-flechas { display: flex; align-items: center; justify-content: center; width: 100%; gap: 12px; margin-bottom: 18px; }
@@ -139,15 +128,12 @@
             border-radius: 16px; border: 2px solid var(--gris-claro);
             overflow: hidden; min-width: 220px;
             box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
-            cursor: grab;
-            position: relative;
+            cursor: grab; position: relative;
         }
         .area-vista:active { cursor: grabbing; }
         .area-vista img {
-            position: absolute;
-            user-select: none; pointer-events: none;
-            transform-origin: center center;
-            transition: transform 0.1s ease;
+            position: absolute; user-select: none; pointer-events: none;
+            transform-origin: center center; transition: transform 0.1s ease;
         }
         .aviso-sin { text-align: center; padding: 60px; color: var(--gris-medio); font-size: 1.1em; }
         .barra-controles { display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap; padding: 16px; background: linear-gradient(135deg, #F0F4F8, #E6F0FA); border-radius: 14px; width: 100%; border: 1px solid var(--gris-claro); }
@@ -163,7 +149,8 @@
         .pdf-oculto .img-pdf { margin-bottom: 25px; text-align: center; }
         .pdf-oculto .img-pdf img { max-width: 100%; border: 1px solid #CBD5E1; border-radius: 6px; }
         .pdf-oculto .img-pdf .nombre { font-weight: 600; color: #1E293B; margin-top: 8px; font-size: 13px; }
-        .aviso-compartido { background: linear-gradient(#FFFBEB, #FFF3C7); border-left: 5px solid var(--amarillo-dorado); padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9em; color: #926300; }
+        .sincronizando { display: inline-block; animation: girar 1s linear infinite; margin-right: 6px; }
+        @keyframes girar { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @media (max-width: 600px) {
             .visor-con-flechas { flex-direction: column; }
             .btn-flecha-lado { width: 130px; height: 52px; }
@@ -174,11 +161,13 @@
     </style>
 </head>
 <body>
-    <div class="titulo-pagina">📋 Seguimiento Diario</div>
+    <div class="titulo-pagina">📋 Seguimiento Diario — Compartido</div>
+
+    <!-- PANTALLA INICIO -->
     <div class="pantalla-inicio" id="pantallaInicio">
         <div class="logo-titulo">
-            <h2>Bienvenido al Sistema de Seguimiento Diario</h2>
-            <p>Buenas noches</p>
+            <h2>Bienvenido al Sistema Compartido</h2>
+            <p>Las imágenes se sincronizan en tiempo real para todos los usuarios</p>
         </div>
         <div class="persona-reportes">
             <span class="reporte-icon">📝</span>
@@ -187,49 +176,54 @@
             <button class="boton-acceso administrador" onclick="ingresarComo('admin')">
                 <div class="icono">🔐</div>
                 <h2>Ingresar como Administrador</h2>
-                <p>Cargar imágenes, administrar y generar reportes</p>
+                <p>Cargar, administrar y generar reportes</p>
             </button>
             <button class="boton-acceso espectador" onclick="ingresarComo('espectador')">
                 <div class="icono">👁️</div>
                 <h2>Ingresar como Espectador</h2>
-                <p>Visualizar imágenes disponibles</p>
+                <p>Ver imágenes en tiempo real</p>
             </button>
         </div>
     </div>
+
+    <!-- PANTALLA ADMINISTRADOR -->
     <div class="oculto" id="pantallaAdmin">
         <div class="cabecera">
-            <h1>🔐 Panel de Administración — Seguimiento Diario</h1>
-            <button class="boton-salir" onclick="cerrarSesion()">🚪 Cerrar Sesión</button>
+            <h1>🔐 Panel de Administración</h1>
+            <div style="display:flex; gap:12px; align-items:center;">
+                <span id="estadoSincro" style="font-size:0.9em;">✅ Sincronizado</span>
+                <button class="boton-salir" onclick="cerrarSesion()">🚪 Salir</button>
+            </div>
         </div>
         <div class="contenedor">
             <div class="panel-admin">
-                <h2>📤 Cargar y Guardar Imágenes</h2>
-                <div class="aviso-compartido">
-                    ℹ️ Las imágenes cargadas se mantendrán visibles para todos los usuarios hasta que se carguen imágenes nuevas.
+                <h2>📤 Cargar Imágenes</h2>
+                <div class="aviso azul">
+                    🌐 Las imágenes se subirán a la nube y aparecerán en todos los dispositivos conectados.
                 </div>
                 <div class="area-carga">
-                    <p>Selecciona una o varias imágenes (JPG, PNG, GIF, etc.)</p>
+                    <p>Selecciona una o varias imágenes</p>
                     <input type="file" id="cargarImagenes" multiple accept="image/*" style="margin:15px 0; font-size:15px;">
                     <div class="grupo-botones-carga">
-                        <button class="btn btn-azul" onclick="procesarCarga()">📂 Cargar Imágenes Seleccionadas</button>
-                        <button class="btn btn-verde" onclick="generarPDF()">💾 Guardar y Generar PDF</button>
+                        <button class="btn btn-azul" id="btnSubir" onclick="subirImagenes()">☁️ Subir a la Nube</button>
+                        <button class="btn btn-verde" onclick="generarPDF()">💾 Generar PDF</button>
                     </div>
                 </div>
-                <div class="aviso verde" id="estadoCarga">Selecciona tus imágenes, pulsa "Cargar" y luego "Guardar y Generar PDF". Las imágenes se mantendrán hasta que cargues nuevas.</div>
+                <div class="aviso azul" id="estadoCarga">Selecciona imágenes y pulsa "Subir a la Nube"</div>
                 <div class="encabezado-lista">
-                    <h2>📋 Imágenes Cargadas</h2>
-                    <button class="btn-rojo-grande" onclick="eliminarTodo()">🗑️ Eliminar Todos los Registros</button>
+                    <h2>📋 Imágenes Compartidas</h2>
+                    <button class="btn-rojo-grande" id="btnEliminarTodo" onclick="eliminarTodo()">🗑️ Eliminar Todas</button>
                 </div>
                 <div class="lista-imagenes" id="listaImagenes"></div>
             </div>
             <div class="visor-seccion">
-                <h2>🖼️ Visor de Imágenes</h2>
+                <h2>🖼️ Visor</h2>
                 <div class="fecha-visor" id="fechaVisorAdmin">📅 Fecha: --/--/----</div>
                 <div class="visor-principal">
                     <div class="visor-con-flechas">
                         <button class="btn-flecha-lado" id="btnIzqAdmin" onclick="anterior()">◀</button>
                         <div class="area-vista" id="areaVistaAdmin">
-                            <div class="aviso-sin">Carga imágenes para visualizarlas aquí.<br>💡 Puedes arrastrar la imagen para verla completa.</div>
+                            <div class="aviso-sin">Esperando imágenes desde la nube...</div>
                         </div>
                         <button class="btn-flecha-lado" id="btnDerAdmin" onclick="siguiente()">▶</button>
                     </div>
@@ -246,10 +240,15 @@
             </div>
         </div>
     </div>
+
+    <!-- PANTALLA ESPECTADOR -->
     <div class="oculto" id="pantallaEspectador">
         <div class="cabecera" style="background: linear-gradient(135deg, var(--verde-brillante), var(--verde-oscuro));">
-            <h1>👁️ Visor — Seguimiento Diario</h1>
-            <button class="boton-salir" onclick="cerrarSesion()">🚪 Cerrar Sesión</button>
+            <h1>👁️ Visor Compartido</h1>
+            <div style="display:flex; gap:12px; align-items:center;">
+                <span id="estadoSincroEsp" style="font-size:0.9em;">✅ En vivo</span>
+                <button class="boton-salir" onclick="cerrarSesion()">🚪 Salir</button>
+            </div>
         </div>
         <div class="contenedor">
             <div class="visor-seccion">
@@ -259,7 +258,7 @@
                     <div class="visor-con-flechas">
                         <button class="btn-flecha-lado" id="btnIzqEsp" onclick="anteriorEsp()">◀</button>
                         <div class="area-vista" id="areaVistaEsp">
-                            <div class="aviso-sin">No hay imágenes disponibles.<br>💡 Puedes arrastrar la imagen para verla completa.</div>
+                            <div class="aviso-sin">Esperando imágenes del administrador...</div>
                         </div>
                         <button class="btn-flecha-lado" id="btnDerEsp" onclick="siguienteEsp()">▶</button>
                     </div>
@@ -276,11 +275,34 @@
             </div>
         </div>
     </div>
+
     <div class="pdf-oculto" id="contenidoPDF"></div>
+
     <script>
-        const { jsPDF } = window.jspdf;
-        const CLAVE = 'plataforma_imagenes_guardadas';
+        // ==========================================================
+        // 🔧 CONFIGURACIÓN DE FIREBASE — PON TUS DATOS AQUÍ
+        // ==========================================================
+        const CONFIGURACION_FIREBASE = {
+            apiKey: "AIzaSyC_XXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            authDomain: "tu-proyecto.firebaseapp.com",
+            databaseURL: "https://tu-proyecto-default-rtdb.firebaseio.com",
+            projectId: "tu-proyecto",
+            storageBucket: "tu-proyecto.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+        };
+
+        // CONTRASEÑA DE ADMINISTRADOR
         const CONTRASEÑA_ADMIN = 'chacon';
+
+        // Inicializar Firebase
+        firebase.initializeApp(CONFIGURACION_FIREBASE);
+        const baseDatos = firebase.database();
+        const almacenamiento = firebase.storage();
+        const refImagenes = baseDatos.ref('imagenes_compartidas');
+
+        // Variables globales
+        const { jsPDF } = window.jspdf;
         let imagenes = [];
         let indiceActual = 0;
         let escala = 1;
@@ -288,253 +310,266 @@
         let desplazamientoX = 0, desplazamientoY = 0;
         let arrastrando = false;
         let areaActiva = null;
+        let rolActual = null;
+        let escuchando = false;
 
-        // CARGAR IMÁGENES GUARDADAS AL INICIAR SIEMPRE
-        window.onload = function() {
-            cargarGuardadas(); // ✅ Se cargan automáticamente al abrir la página
-            document.addEventListener('keydown', function(e) {
-                if (!document.getElementById('pantallaAdmin').classList.contains('oculto') && imagenes.length) {
-                    if (e.key === 'ArrowLeft') { e.preventDefault(); anterior(); }
-                    if (e.key === 'ArrowRight') { e.preventDefault(); siguiente(); }
+        // ==========================================================
+        // 🔄 SINCRONIZACIÓN EN TIEMPO REAL
+        // ==========================================================
+        function iniciarEscucha() {
+            if (escuchando) return;
+            escuchando = true;
+            
+            refImagenes.on('value', (snapshot) => {
+                const datos = snapshot.val();
+                imagenes = datos ? Object.values(datos).map(img => img) : [];
+                imagenes.sort((a, b) => a.orden - b.orden);
+                
+                if (rolActual === 'admin') {
+                    dibujarLista();
+                    mostrarActual();
+                } else if (rolActual === 'espectador') {
+                    mostrarActualEsp();
                 }
-                if (!document.getElementById('pantallaEspectador').classList.contains('oculto') && imagenes.length) {
-                    if (e.key === 'ArrowLeft') { e.preventDefault(); anteriorEsp(); }
-                    if (e.key === 'ArrowRight') { e.preventDefault(); siguienteEsp(); }
-                }
+                actualizarEstadoSincro();
+            }, (error) => {
+                console.error('Error de sincronización:', error);
+                mostrarAviso('Error de conexión: ' + error.message, 'rojo');
             });
-        };
-
-        // ✅ CARGAR DESDE EL ALMACENAMIENTO COMPARTIDO
-        function cargarGuardadas() {
-            const datos = localStorage.getItem(CLAVE);
-            if (datos) {
-                imagenes = JSON.parse(datos);
-                console.log(`✅ Se cargaron ${imagenes.length} imágenes guardadas`);
-            } else {
-                imagenes = [];
-                console.log('ℹ️ No hay imágenes guardadas aún');
-            }
         }
 
-        // ✅ GUARDAR EN ALMACENAMIENTO COMPARTIDO
-        function guardar() {
-            localStorage.setItem(CLAVE, JSON.stringify(imagenes));
+        function detenerEscucha() {
+            refImagenes.off();
+            escuchando = false;
         }
 
-        function ordenar() {
-            imagenes.sort((a, b) => a.orden - b.orden);
+        function actualizarEstadoSincro() {
+            const estado = imagenes.length > 0 
+                ? `✅ ${imagenes.length} imagen(es) sincronizada(s)` 
+                : '✅ Conectado — sin imágenes';
+            
+            const elAdmin = document.getElementById('estadoSincro');
+            const elEsp = document.getElementById('estadoSincroEsp');
+            if (elAdmin) elAdmin.textContent = estado;
+            if (elEsp) elEsp.textContent = estado;
         }
 
-        function obtenerFechaHoy() {
-            const hoy = new Date();
-            const dd = String(hoy.getDate()).padStart(2, '0');
-            const mm = String(hoy.getMonth() + 1).padStart(2, '0');
-            const aaaa = hoy.getFullYear();
-            return `${dd}-${mm}-${aaaa}`;
-        }
-
-        function iniciarArrastre(e, areaId) {
-            const area = document.getElementById(areaId);
-            const img = area.querySelector('img');
-            if (!img) return;
-            areaActiva = areaId;
-            arrastrando = true;
-            posX = e.clientX || e.touches?.[0]?.clientX;
-            posY = e.clientY || e.touches?.[0]?.clientY;
-            desplazamientoX = img.offsetLeft;
-            desplazamientoY = img.offsetTop;
-            e.preventDefault();
-        }
-
-        function arrastrarImagen(e) {
-            if (!arrastrando || !areaActiva) return;
-            const area = document.getElementById(areaActiva);
-            const img = area.querySelector('img');
-            if (!img) return;
-            e.preventDefault();
-            const actualX = e.clientX || e.touches?.[0]?.clientX;
-            const actualY = e.clientY || e.touches?.[0]?.clientY;
-            const dx = actualX - posX;
-            const dy = actualY - posY;
-            img.style.left = (desplazamientoX + dx) + 'px';
-            img.style.top = (desplazamientoY + dy) + 'px';
-        }
-
-        function soltar() {
-            arrastrando = false;
-            areaActiva = null;
-        }
-
+        // ==========================================================
+        // 🔐 ACCESO Y NAVEGACIÓN
+        // ==========================================================
         function ingresarComo(rol) {
             if (rol === 'admin') {
-                const clave = prompt('🔐 Ingresa la contraseña de Administrador:');
+                const clave = prompt('🔐 Contraseña de Administrador:');
                 if (clave !== CONTRASEÑA_ADMIN) {
-                    alert('❌ Contraseña incorrecta. No tienes acceso.');
+                    alert('❌ Contraseña incorrecta');
                     return;
                 }
             }
+            
+            rolActual = rol;
             document.getElementById('pantallaInicio').classList.add('oculto');
             indiceActual = 0; escala = 1;
-            // ✅ CARGAR IMÁGENES GUARDADAS AL ENTRAR
-            cargarGuardadas();
+            
+            iniciarEscucha();
+            
             if (rol === 'admin') {
                 document.getElementById('pantallaAdmin').classList.remove('oculto');
                 configurarArrastre('areaVistaAdmin');
-                dibujarLista();
-                mostrarActual();
             } else {
                 document.getElementById('pantallaEspectador').classList.remove('oculto');
                 configurarArrastre('areaVistaEsp');
-                mostrarActualEsp();
             }
-        }
-
-        function configurarArrastre(areaId) {
-            const area = document.getElementById(areaId);
-            area.addEventListener('mousedown', e => iniciarArrastre(e, areaId));
-            document.addEventListener('mousemove', arrastrarImagen);
-            document.addEventListener('mouseup', soltar);
-            area.addEventListener('touchstart', e => iniciarArrastre(e, areaId), { passive: false });
-            document.addEventListener('touchmove', arrastrarImagen, { passive: false });
-            area.addEventListener('touchend', soltar);
         }
 
         function cerrarSesion() {
+            detenerEscucha();
+            rolActual = null;
+            imagenes = [];
+            indiceActual = 0;
             document.getElementById('pantallaAdmin').classList.add('oculto');
             document.getElementById('pantallaEspectador').classList.add('oculto');
             document.getElementById('pantallaInicio').classList.remove('oculto');
-            indiceActual = 0; escala = 1;
         }
 
-        function procesarCarga() {
+        // ==========================================================
+        // ☁️ SUBIDA A LA NUBE
+        // ==========================================================
+        async function subirImagenes() {
             const entrada = document.getElementById('cargarImagenes');
             const archivos = entrada.files;
+            
             if (!archivos.length) {
-                document.getElementById('estadoCarga').innerHTML = '⚠️ Primero selecciona una o más imágenes';
-                document.getElementById('estadoCarga').className = 'aviso amarillo';
+                mostrarAviso('⚠️ Selecciona al menos una imagen', 'amarillo');
                 return;
             }
-            const ahora = new Date();
+            
+            estadoSubida(true);
             const fecha = obtenerFechaHoy();
-            const hora = ahora.toTimeString().substring(0,8);
-            let cargadas = 0;
-            // ✅ AL CARGAR NUEVAS, SE REEMPLAZAN LAS ANTERIORES
-            imagenes = [];
-            for (let i = 0; i < archivos.length; i++) {
-                const archivo = archivos[i];
-                const lector = new FileReader();
-                const nuevoOrden = imagenes.length + i + 1;
-                lector.onload = function(evt) {
-                    imagenes.push({
-                        id: Date.now() + Math.random().toString(36).substr(2,9),
+            const ahora = new Date();
+            const hora = ahora.toTimeString().substring(0, 8);
+            let subidas = 0;
+            const nuevasImagenes = [];
+            
+            try {
+                for (let i = 0; i < archivos.length; i++) {
+                    const archivo = archivos[i];
+                    const id = Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+                    const ruta = `imagenes/${fecha}/${id}_${archivo.name}`;
+                    
+                    // Subir a Firebase Storage
+                    const refArchivo = almacenamiento.ref(ruta);
+                    await refArchivo.put(archivo);
+                    const url = await refArchivo.getDownloadURL();
+                    
+                    nuevasImagenes.push({
+                        id: id,
                         nombre: archivo.name,
                         fecha: fecha,
                         hora: hora,
-                        orden: nuevoOrden,
-                        datos: evt.target.result
+                        orden: imagenes.length + i + 1,
+                        url: url,
+                        subidoPor: 'admin'
                     });
-                    cargadas++;
-                    if (cargadas === archivos.length) {
-                        ordenar();
-                        guardar(); // ✅ SE GUARDAN PARA TODOS
-                        dibujarLista();
-                        mostrarActual();
-                        document.getElementById('estadoCarga').innerHTML =
-                            `✅ Se cargaron ${cargadas} imagen(es) nueva(s). Se mantendrán visibles hasta que cargues otras.`;
-                        document.getElementById('estadoCarga').className = 'aviso verde';
-                        entrada.value = '';
-                    }
-                };
-                lector.readAsDataURL(archivo);
+                    subidas++;
+                }
+                
+                // Guardar en la base de datos
+                nuevasImagenes.forEach(img => {
+                    refImagenes.child(img.id).set(img);
+                });
+                
+                mostrarAviso(`✅ ${subidas} imagen(es) subida(s) y compartida(s)`, 'verde');
+                entrada.value = '';
+                
+            } catch (error) {
+                console.error('Error al subir:', error);
+                mostrarAviso('❌ Error: ' + error.message, 'rojo');
+            } finally {
+                estadoSubida(false);
             }
         }
 
-        async function generarPDF() {
+        function estadoSubida(subiendo) {
+            document.getElementById('btnSubir').disabled = subiendo;
+            if (subiendo) {
+                document.getElementById('estadoCarga').innerHTML = '<span class="sincronizando">☁️</span> Subiendo...';
+                document.getElementById('estadoCarga').className = 'aviso azul';
+            } else {
+                document.getElementById('estadoCarga').textContent = 'Listo para subir más imágenes';
+                document.getElementById('estadoCarga').className = 'aviso azul';
+            }
+        }
+
+        // ==========================================================
+        // 📋 FUNCIONES DE ADMINISTRACIÓN
+        // ==========================================================
+        async function eliminar(pos) {
+            if (!confirm(`¿Eliminar "${imagenes[pos].nombre}"?`)) return;
+            const img = imagenes[pos];
+            
+            try {
+                // Eliminar de la base de datos
+                await refImagenes.child(img.id).remove();
+                reordenar();
+                mostrarAviso(`🗑️ Eliminada: ${img.nombre}`, 'verde');
+            } catch (error) {
+                mostrarAviso('❌ Error al eliminar: ' + error.message, 'rojo');
+            }
+        }
+
+        async function eliminarTodo() {
+            if (!confirm('⚠️ ¿Eliminar TODAS las imágenes? Esto afecta a TODOS los usuarios. No se puede deshacer.')) return;
+            
+            try {
+                await refImagenes.remove();
+                mostrarAviso('🗑️ Se eliminaron todas las imágenes compartidas', 'rojo');
+                indiceActual = 0;
+            } catch (error) {
+                mostrarAviso('❌ Error: ' + error.message, 'rojo');
+            }
+        }
+
+        async function reordenar() {
+            // Actualizar números de orden en Firebase
+            const actualizadas = {};
+            imagenes.forEach((img, i) => {
+                img.orden = i + 1;
+                actualizadas[img.id + '/orden'] = i + 1;
+            });
+            await refImagenes.update(actualizadas);
+        }
+
+        async function subirPos(pos) {
+            if (pos === 0) return;
+            [imagenes[pos-1].orden, imagenes[pos].orden] = [imagenes[pos].orden, imagenes[pos-1].orden];
+            await refImagenes.update({
+                [imagenes[pos-1].id + '/orden']: imagenes[pos-1].orden,
+                [imagenes[pos].id + '/orden']: imagenes[pos].orden
+            });
+            if (indiceActual === pos) indiceActual--;
+            else if (indiceActual === pos-1) indiceActual++;
+        }
+
+        async function bajarPos(pos) {
+            if (pos === imagenes.length - 1) return;
+            [imagenes[pos+1].orden, imagenes[pos].orden] = [imagenes[pos].orden, imagenes[pos+1].orden];
+            await refImagenes.update({
+                [imagenes[pos+1].id + '/orden']: imagenes[pos+1].orden,
+                [imagenes[pos].id + '/orden']: imagenes[pos].orden
+            });
+            if (indiceActual === pos) indiceActual++;
+            else if (indiceActual === pos+1) indiceActual--;
+        }
+
+        function irA(pos) { indiceActual = pos; escala = 1; mostrarActual(); }
+
+        // ==========================================================
+        // 🖼️ VISOR Y NAVEGACIÓN
+        // ==========================================================
+        function mostrarActual() {
+            const area = document.getElementById('areaVistaAdmin');
+            const ind = document.getElementById('indicador');
+            
             if (imagenes.length === 0) {
-                document.getElementById('estadoCarga').innerHTML = '⚠️ No hay imágenes para generar el PDF. Carga imágenes primero.';
-                document.getElementById('estadoCarga').className = 'aviso amarillo';
+                area.innerHTML = '<div class="aviso-sin">Sube imágenes para que aparezcan aquí y en todos los dispositivos.</div>';
+                ind.textContent = '0 / 0';
+                actualizarFechaVisor(null);
+                actualizarFlechas('admin');
                 return;
             }
-            const fechaHoy = obtenerFechaHoy();
-            const nombreArchivo = `Seguimiento_Diario_${fechaHoy}.pdf`;
-            const contenido = document.getElementById('contenidoPDF');
-            contenido.innerHTML = `
-                <h1>📋 Seguimiento Diario</h1>
-                <div class="fecha">Fecha de generación: ${fechaHoy}</div>
-                ${imagenes.map(img => `
-                    <div class="img-pdf">
-                        <img src="${img.datos}" alt="${img.nombre}">
-                        <div class="nombre">📄 ${img.nombre} — ${img.fecha} ${img.hora}</div>
-                    </div>
-                `).join('')}
-            `;
-            try {
-                const canvas = await html2canvas(contenido, { scale: 2, useCORS: true });
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF({
-                    orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
-                    unit: 'mm',
-                    format: 'a4'
-                });
-                const pageWidth = pdf.internal.pageSize.getWidth();
-                const pageHeight = pdf.internal.pageSize.getHeight();
-                const imgWidth = pageWidth - 20;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 10;
-                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-                while (heightLeft > 0) {
-                    position = heightLeft - imgHeight + 10;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
-                pdf.save(nombreArchivo);
-                document.getElementById('estadoCarga').innerHTML =
-                    `✅ PDF generado: ${nombreArchivo} — ${imagenes.length} imágenes incluidas.`;
-                document.getElementById('estadoCarga').className = 'aviso verde';
-            } catch (err) {
-                document.getElementById('estadoCarga').innerHTML = '❌ Error al generar el PDF: ' + err.message;
-                document.getElementById('estadoCarga').className = 'aviso rojo';
+            
+            const img = imagenes[indiceActual];
+            ind.textContent = `${indiceActual + 1} / ${imagenes.length}`;
+            actualizarFechaVisor(img.fecha);
+            escala = 1;
+            area.innerHTML = `<img src="${img.url}" alt="${img.nombre}" style="transform:scale(1); left:50%; top:50%; margin-left:-150px; margin-top:-75px;">`;
+            actualizarFlechas('admin');
+        }
+
+        function mostrarActualEsp() {
+            const area = document.getElementById('areaVistaEsp');
+            const ind = document.getElementById('indicadorEsp');
+            
+            if (imagenes.length === 0) {
+                area.innerHTML = '<div class="aviso-sin">El administrador aún no ha subido imágenes.</div>';
+                ind.textContent = '0 / 0';
+                actualizarFechaVisor(null);
+                actualizarFlechas('esp');
+                return;
             }
-            contenido.innerHTML = '';
-        }
-
-        function eliminarTodo() {
-            if (!confirm('⚠️ ¿Eliminar TODAS las imágenes? Esta acción NO se puede deshacer y afectará a todos los usuarios.')) return;
-            imagenes = [];
-            localStorage.removeItem(CLAVE);
-            indiceActual = 0; escala = 1;
-            dibujarLista();
-            mostrarActual();
-            document.getElementById('estadoCarga').innerHTML = '🗑️ Se eliminaron TODOS los registros. Ahora no hay imágenes visibles.';
-            document.getElementById('estadoCarga').className = 'aviso rojo';
-        }
-
-        function actualizarFlechas(modo) {
-            const hayImgs = imagenes.length > 0;
-            const primera = indiceActual === 0;
-            const ultima = indiceActual >= imagenes.length - 1;
-            if (modo === 'admin') {
-                document.getElementById('btnIzqAdmin').disabled = !hayImgs || primera;
-                document.getElementById('btnDerAdmin').disabled = !hayImgs || ultima;
-            } else {
-                document.getElementById('btnIzqEsp').disabled = !hayImgs || primera;
-                document.getElementById('btnDerEsp').disabled = !hayImgs || ultima;
-            }
-        }
-
-        function actualizarFechaVisor(fecha) {
-            const texto = fecha ? `📅 Fecha de carga: ${fecha}` : '📅 Fecha: --/--/----';
-            document.getElementById('fechaVisorAdmin').textContent = texto;
-            document.getElementById('fechaVisorEsp').textContent = texto;
+            
+            const img = imagenes[indiceActual];
+            ind.textContent = `${indiceActual + 1} / ${imagenes.length}`;
+            actualizarFechaVisor(img.fecha);
+            escala = 1;
+            area.innerHTML = `<img src="${img.url}" alt="${img.nombre}" style="transform:scale(1); left:50%; top:50%; margin-left:-150px; margin-top:-75px;">`;
+            actualizarFlechas('esp');
         }
 
         function dibujarLista() {
             const caja = document.getElementById('listaImagenes');
             if (imagenes.length === 0) {
-                caja.innerHTML = '<p style="color:var(--gris-medio);">No hay imágenes cargadas.</p>';
+                caja.innerHTML = '<p style="color:var(--gris-medio);">No hay imágenes compartidas aún.</p>';
                 return;
             }
             caja.innerHTML = imagenes.map((img, pos) => `
@@ -548,8 +583,8 @@
                         </div>
                     </div>
                     <div class="acciones">
-                        <button class="btn-orden" onclick="subir(${pos})">⬆</button>
-                        <button class="btn-orden" onclick="bajar(${pos})">⬇</button>
+                        <button class="btn-orden" onclick="subirPos(${pos})">⬆</button>
+                        <button class="btn-orden" onclick="bajarPos(${pos})">⬇</button>
                         <button class="btn-naranja" onclick="irA(${pos})">👁 Ver</button>
                         <button class="btn-morado" onclick="eliminar(${pos})">🗑</button>
                     </div>
@@ -557,94 +592,169 @@
             `).join('');
         }
 
-        function eliminar(pos) {
-            if (!confirm(`¿Eliminar "${imagenes[pos].nombre}"?`)) return;
-            imagenes.splice(pos, 1);
-            imagenes.forEach((img, i) => img.orden = i + 1);
-            guardar(); // ✅ Se guarda el cambio
-            if (indiceActual >= imagenes.length) indiceActual = Math.max(0, imagenes.length - 1);
-            dibujarLista();
-            mostrarActual();
-        }
-
-        function subir(pos) {
-            if (pos === 0) return;
-            [imagenes[pos-1].orden, imagenes[pos].orden] = [imagenes[pos].orden, imagenes[pos-1].orden];
-            ordenar(); guardar(); dibujarLista();
-            if (indiceActual === pos) indiceActual--;
-            else if (indiceActual === pos-1) indiceActual++;
-            mostrarActual();
-        }
-
-        function bajar(pos) {
-            if (pos === imagenes.length - 1) return;
-            [imagenes[pos+1].orden, imagenes[pos].orden] = [imagenes[pos].orden, imagenes[pos+1].orden];
-            ordenar(); guardar(); dibujarLista();
-            if (indiceActual === pos) indiceActual++;
-            else if (indiceActual === pos+1) indiceActual--;
-            mostrarActual();
-        }
-
-        function irA(pos) { indiceActual = pos; escala = 1; mostrarActual(); }
-
-        function mostrarActual() {
-            const area = document.getElementById('areaVistaAdmin');
-            const ind = document.getElementById('indicador');
-            if (imagenes.length === 0) {
-                area.innerHTML = '<div class="aviso-sin">Carga imágenes para visualizarlas aquí.<br>💡 Puedes arrastrar la imagen para verla completa.</div>';
-                ind.textContent = '0 / 0';
-                actualizarFechaVisor(null);
-                actualizarFlechas('admin');
-                return;
-            }
-            const img = imagenes[indiceActual];
-            ind.textContent = `${indiceActual + 1} / ${imagenes.length}`;
-            actualizarFechaVisor(img.fecha);
-            escala = 1;
-            area.innerHTML = `<img src="${img.datos}" alt="${img.nombre}" style="transform:scale(1); left:50%; top:50%; margin-left:-150px; margin-top:-75px;">`;
-            actualizarFlechas('admin');
-        }
-
         function anterior() { if (indiceActual > 0) { indiceActual--; escala = 1; mostrarActual(); } }
         function siguiente() { if (indiceActual < imagenes.length - 1) { indiceActual++; escala = 1; mostrarActual(); } }
+        function anteriorEsp() { if (indiceActual > 0) { indiceActual--; escala = 1; mostrarActualEsp(); } }
+        function siguienteEsp() { if (indiceActual < imagenes.length - 1) { indiceActual++; escala = 1; mostrarActualEsp(); } }
+
+        // Zoom
         function acercar() { escala *= 1.3; aplicarZoom('areaVistaAdmin'); }
         function alejar() { escala /= 1.3; aplicarZoom('areaVistaAdmin'); }
         function restablecer() { escala = 1; mostrarActual(); }
-        function aplicarZoom(areaId) {
-            const area = document.getElementById(areaId);
-            const img = area.querySelector('img');
-            if (img) img.style.transform = `scale(${escala})`;
-        }
-        function pantallaCompleta() {
-            document.getElementById('areaVistaAdmin').requestFullscreen?.();
-        }
-
-        function mostrarActualEsp() {
-            const area = document.getElementById('areaVistaEsp');
-            const ind = document.getElementById('indicadorEsp');
-            if (imagenes.length === 0) {
-                area.innerHTML = '<div class="aviso-sin">No hay imágenes disponibles.<br>💡 Puedes arrastrar la imagen para verla completa.</div>';
-                ind.textContent = '0 / 0';
-                actualizarFechaVisor(null);
-                actualizarFlechas('esp');
-                return;
-            }
-            const img = imagenes[indiceActual];
-            ind.textContent = `${indiceActual + 1} / ${imagenes.length}`;
-            actualizarFechaVisor(img.fecha);
-            escala = 1;
-            area.innerHTML = `<img src="${img.datos}" alt="${img.nombre}" style="transform:scale(1); left:50%; top:50%; margin-left:-150px; margin-top:-75px;">`;
-            actualizarFlechas('esp');
-        }
-
-        function anteriorEsp() { if (indiceActual > 0) { indiceActual--; escala = 1; mostrarActualEsp(); } }
-        function siguienteEsp() { if (indiceActual < imagenes.length - 1) { indiceActual++; escala = 1; mostrarActualEsp(); } }
         function acercarEsp() { escala *= 1.3; aplicarZoom('areaVistaEsp'); }
         function alejarEsp() { escala /= 1.3; aplicarZoom('areaVistaEsp'); }
         function restablecerEsp() { escala = 1; mostrarActualEsp(); }
-        function pantallaCompletaEsp() {
-            document.getElementById('areaVistaEsp').requestFullscreen?.();
+        function aplicarZoom(areaId) {
+            const img = document.getElementById(areaId)?.querySelector('img');
+            if (img) img.style.transform = `scale(${escala})`;
         }
+
+        // Pantalla completa
+        function pantallaCompleta() { document.getElementById('areaVistaAdmin').requestFullscreen?.(); }
+        function pantallaCompletaEsp() { document.getElementById('areaVistaEsp').requestFullscreen?.(); }
+
+        // Arrastre de imagen
+        function iniciarArrastre(e, areaId) {
+            const img = document.getElementById(areaId)?.querySelector('img');
+            if (!img) return;
+            areaActiva = areaId;
+            arrastrando = true;
+            posX = e.clientX || e.touches?.[0]?.clientX;
+            posY = e.clientY || e.touches?.[0]?.clientY;
+            desplazamientoX = img.offsetLeft;
+            desplazamientoY = img.offsetTop;
+            e.preventDefault();
+        }
+        function arrastrarImagen(e) {
+            if (!arrastrando) return;
+            const img = document.getElementById(areaActiva)?.querySelector('img');
+            if (!img) return;
+            e.preventDefault();
+            const dx = (e.clientX || e.touches?.[0]?.clientX) - posX;
+            const dy = (e.clientY || e.touches?.[0]?.clientY) - posY;
+            img.style.left = (desplazamientoX + dx) + 'px';
+            img.style.top = (desplazamientoY + dy) + 'px';
+        }
+        function soltar() { arrastrando = false; areaActiva = null; }
+        function configurarArrastre(areaId) {
+            const area = document.getElementById(areaId);
+            area.addEventListener('mousedown', e => iniciarArrastre(e, areaId));
+            document.addEventListener('mousemove', arrastrarImagen);
+            document.addEventListener('mouseup', soltar);
+            area.addEventListener('touchstart', e => iniciarArrastre(e, areaId), { passive: false });
+            document.addEventListener('touchmove', arrastrarImagen, { passive: false });
+            area.addEventListener('touchend', soltar);
+        }
+
+        // ==========================================================
+        // 📄 GENERAR PDF
+        // ==========================================================
+        async function generarPDF() {
+            if (imagenes.length === 0) {
+                mostrarAviso('⚠️ No hay imágenes para generar el PDF', 'amarillo');
+                return;
+            }
+            
+            const fechaHoy = obtenerFechaHoy();
+            const nombreArchivo = `Seguimiento_Diario_${fechaHoy}.pdf`;
+            const contenido = document.getElementById('contenidoPDF');
+            
+            contenido.innerHTML = `
+                <h1>📋 Seguimiento Diario</h1>
+                <div class="fecha">Fecha de generación: ${fechaHoy}</div>
+                ${imagenes.map(img => `
+                    <div class="img-pdf">
+                        <img src="${img.url}" alt="${img.nombre}" crossorigin="anonymous">
+                        <div class="nombre">📄 ${img.nombre} — ${img.fecha} ${img.hora}</div>
+                    </div>
+                `).join('')}
+            `;
+            
+            try {
+                const canvas = await html2canvas(contenido, { scale: 2, useCORS: true });
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF({
+                    orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+                
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
+                const imgWidth = pageWidth - 20;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 10;
+                
+                pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+                
+                while (heightLeft > 0) {
+                    position = heightLeft - imgHeight + 10;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+                
+                pdf.save(nombreArchivo);
+                mostrarAviso(`✅ PDF generado: ${nombreArchivo}`, 'verde');
+            } catch (err) {
+                mostrarAviso('❌ Error al generar PDF: ' + err.message, 'rojo');
+            }
+            
+            contenido.innerHTML = '';
+        }
+
+        // ==========================================================
+        // 🔧 UTILIDADES
+        // ==========================================================
+        function obtenerFechaHoy() {
+            const hoy = new Date();
+            const dd = String(hoy.getDate()).padStart(2, '0');
+            const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+            const aaaa = hoy.getFullYear();
+            return `${dd}-${mm}-${aaaa}`;
+        }
+
+        function actualizarFechaVisor(fecha) {
+            const texto = fecha ? `📅 Fecha de carga: ${fecha}` : '📅 Fecha: --/--/----';
+            const elAdmin = document.getElementById('fechaVisorAdmin');
+            const elEsp = document.getElementById('fechaVisorEsp');
+            if (elAdmin) elAdmin.textContent = texto;
+            if (elEsp) elEsp.textContent = texto;
+        }
+
+        function actualizarFlechas(modo) {
+            const hay = imagenes.length > 0;
+            const pri = indiceActual === 0;
+            const ult = indiceActual >= imagenes.length - 1;
+            
+            if (modo === 'admin') {
+                document.getElementById('btnIzqAdmin').disabled = !hay || pri;
+                document.getElementById('btnDerAdmin').disabled = !hay || ult;
+            } else {
+                document.getElementById('btnIzqEsp').disabled = !hay || pri;
+                document.getElementById('btnDerEsp').disabled = !hay || ult;
+            }
+        }
+
+        function mostrarAviso(mensaje, tipo) {
+            const el = document.getElementById('estadoCarga');
+            el.innerHTML = mensaje;
+            el.className = `aviso ${tipo}`;
+        }
+
+        // Teclas de navegación
+        document.addEventListener('keydown', (e) => {
+            if (rolActual === 'admin' && imagenes.length) {
+                if (e.key === 'ArrowLeft') { e.preventDefault(); anterior(); }
+                if (e.key === 'ArrowRight') { e.preventDefault(); siguiente(); }
+            }
+            if (rolActual === 'espectador' && imagenes.length) {
+                if (e.key === 'ArrowLeft') { e.preventDefault(); anteriorEsp(); }
+                if (e.key === 'ArrowRight') { e.preventDefault(); siguienteEsp(); }
+            }
+        });
     </script>
 </body>
 </html>
